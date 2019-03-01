@@ -5,6 +5,7 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import dagger.Component
 import javax.inject.Inject
+import javax.inject.Singleton
 
 interface ItemRepositoryProxy {
     fun getText(): String
@@ -17,6 +18,7 @@ interface ListDependencies {
 @Component(
     dependencies = [ListDependencies::class]
 )
+@Singleton
 interface ListComponent {
     fun inject(listActivity: ListActivity)
 }
@@ -33,8 +35,9 @@ class ListActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        val dependencies = (application as ListDependenciesProvider).dependencies
         DaggerListComponent.builder()
-            .listDependencies((application as ListDependenciesProvider).dependencies)
+            .listDependencies(dependencies)
             .build()
             .inject(this)
 
